@@ -1,22 +1,6 @@
 % Aerial racing
 clear all; clc;
 
-% %% Create AVI object
-% makemovie1 = 0; % Inverse Measurement Model Video
-% if(makemovie1)
-%     vidObj1 = VideoWriter('ex1_measurement_model.avi');
-%     vidObj1.Quality = 100;
-%     vidObj1.FrameRate = 4;
-%     open(vidObj1);
-% end
-% makemovie2 = 0; % Occupancy Grid Video
-% if (makemovie2)
-%     vidObj2 = VideoWriter('ex1_occupancy_grid.avi');
-%     vidObj2.Quality = 100;
-%     vidObj2.FrameRate = 4;
-%     open(vidObj2);
-% end
-
 I = imread('Racecourse.png');
 map = im2bw(I, 0.4); % Convert to 0-1 image
 map = flipud(1-map)'; % Convert to 0 free, 1 occupied and flip.
@@ -34,16 +18,6 @@ waypoints = [400  70; 700 100; 850 270;
              760 300; 730 210; 700 130; 600 180];
 waypoint_index = 1;
 dist_threshold = 15;
-
-% % Plotting
-% figure(1); clf; hold on;
-% colormap('gray');
-% imagesc(1-map');
-% plot(startpos(1)/dxy, startpos(2)/dxy, 'ro', 'MarkerSize',10, 'LineWidth', 3);
-% plot(checkpoints(:,1)/dxy, checkpoints(:,2)/dxy, 'g-x', 'MarkerSize',10, 'LineWidth', 3 );
-% xlabel('North (decimeters)')
-% ylabel('East (decimeters)')
-% axis equal
 
 % sensor properties
 phi_m = -0.602:0.01:0.602; % between 69/2 degrees
@@ -86,6 +60,8 @@ for t = 2:length(T)+1
 
     % Generate a measurement data set
     [r_m not_these] = getranges(map, x(:,t), phi_m, r_max, alpha);
+    % add measurement noise
+    r_m = r_m + normrnd(0,0.05);
     
     %% Map update;
 	% Call occupancy grid mapping logit update function using Bresenham

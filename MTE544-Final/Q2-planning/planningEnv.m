@@ -19,7 +19,7 @@ maxCount = 10000;
 [aObsts,bObsts,obsPtsStore] = polygonal_world(posMinBound, posMaxBound, ... 
     minLen, maxLen, numObsts, startPos, endPos, obstBuffer, maxCount);
 
-% plotEnvironment(obsPtsStore,posMinBound, posMaxBound, startPos, endPos, 1);
+plotEnvironment(obsPtsStore,posMinBound, posMaxBound, startPos, endPos, 1);
 
 
 figure(1); clf;
@@ -89,4 +89,5 @@ toc;
 % plot(startPos(1),startPos(2), 'co', 'MarkerSize', 10, 'LineWidth', 3)
 % plot(endPos(1),endPos(2), 'rx', 'MarkerSize', 10, 'LineWidth', 3)
 plot(allGraphPts(spath,1),allGraphPts(spath,2),'g', 'LineWidth',2)
+
 
