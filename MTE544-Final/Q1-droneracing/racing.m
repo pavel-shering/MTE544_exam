@@ -14,10 +14,10 @@ checkpoints = dxy*[440 620; 440 665];
 
 % waypoints = [400 50];
 waypoints = [400  70; 700 100; 850 270;
-             820 390; 710 390; 700 390;
-             760 300; 730 210; 700 130; 600 180];
+             830 390; 810 420; 760 400; 700 400; 700 350;
+             750 300; 720 200; 700 150];
 waypoint_index = 1;
-dist_threshold = 15;
+dist_threshold = 10;
 
 % sensor properties
 phi_m = -0.602:0.01:0.602; % between 69/2 degrees

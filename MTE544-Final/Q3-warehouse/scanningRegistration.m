@@ -11,16 +11,18 @@ if(makemovie)
 end
 
 % Time
-Tf = 20;
-dt = 0.1;
-dx = 0.1
+Tf = 50;
+dt = 0.5;
 T = 0:dt:Tf;
 
-
-I = imread('Racecourse.png');
-map = im2bw(I, 0.4); % Convert to 0-1 image
-map = flipud(1-map)'; % Convert to 0 free, 1 occupied and flip.
-[M,N]= size(map); % Map size [876 x 676]
+% True map
+M = 200;
+N = 200;
+dx = 0.1;
+I = imread('funnymap.jpg');
+I = imresize(I, [M N]);
+map = im2bw(I, 0.7); % Convert to 0-1 image
+map = 1-flipud(map'); % Convert to 0 free, 1 occupied and flip.
 
 % Map and vehicle path
 figure(1);clf; hold on;
@@ -31,17 +33,17 @@ axis([0 M 0 N]);
 if (makemovie) writeVideo(vidObj, getframe(gcf)); end
 
 % Initial Robot State
-x0 = [350 250 pi/2]';
+x0 = [5 4 pi/2]';
 
 % Motion Disturbance model
-R = [0.05 0 0; 
-     0 0.05 0; 
-     0 0 0.02];
+R = [0.001 0 0; 
+     0 0.001 0; 
+     0 0 0.0001];
 [RE, Re] = eig(R);
 
 % Control inputs
 u = zeros(2, length(T));
-u(1,:) = 20;
+u(1,:) = 1;
 u(2,:) = -0.01;
 
 % Measurement model
@@ -113,9 +115,9 @@ for t=2:length(T)
     [min_range, minr_ind] = min(meas_r(:,t));
     u(2,t+1) = -sign(meas_phi(minr_ind))*0.25;
 
-    % [max_range, maxr_ind] = max(meas_r(:,t));
-    % u(2,t+1) = -sign(meas_phi(maxr_ind))*0.5;
-    
+%     [max_range, maxr_ind] = max(meas_r(:,t));
+%     u(2,t+1) = -sign(meas_phi(maxr_ind))*0.5;
+%     
 %    front = find(meas_phi > 0,1);
 %    if (meas_r(front,t)< 25/dx)
 %        if (meas_r(front+5,t) > meas_r(front-5,t))
@@ -163,7 +165,8 @@ for t=2:length(T)
     for i = 1:length(meas_phi)
         % Get inverse measurement model (with scan registration estimate or
         % motion prediction)
-        invmod = inversescannerbres(M,N,xICP(1,t)/dx,xICP(2,t)/dx,meas_phi(i)+xICP(3,t),meas_r(i,t),rmax/dx);
+        invmod = inversescannerbres(M,N,xICP(1,t)/dx,xICP(2,t)/dx,meas_phi(i)...
+            +xICP(3,t),meas_r(i,t),rmax/dx);
         for j = 1:length(invmod(:,1));
             ix = invmod(j,1);
             iy = invmod(j,2);
